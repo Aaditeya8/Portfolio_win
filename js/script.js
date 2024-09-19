@@ -15,12 +15,47 @@ function openWindow(windowId) {
   windowElement.style.zIndex = getMaxZIndex() + 1;
 }
 
+// Close Window Function
 function closeWindow(event) {
   const windowElement = event.target.closest('.window');
   windowElement.classList.remove('show');
+  windowElement.classList.remove('maximized'); // Remove maximized state if any
   setTimeout(() => {
     windowElement.style.display = 'none';
   }, 300); // Duration matches the CSS transition
+}
+
+// Minimize Window Function
+function minimizeWindow(event) {
+  const windowElement = event.target.closest('.window');
+  windowElement.classList.remove('show');
+  // Implement minimize functionality if desired
+}
+
+// Maximize/Restore Window Function
+function maximizeWindow(event) {
+  const windowElement = event.target.closest('.window');
+  if (!windowElement.classList.contains('maximized')) {
+    // Save current position and size
+    windowElement.dataset.prevLeft = windowElement.style.left;
+    windowElement.dataset.prevTop = windowElement.style.top;
+    windowElement.dataset.prevWidth = windowElement.style.width;
+    windowElement.dataset.prevHeight = windowElement.style.height;
+
+    // Maximize the window
+    windowElement.style.left = '0';
+    windowElement.style.top = '0';
+    windowElement.style.width = '100%';
+    windowElement.style.height = '100%';
+    windowElement.classList.add('maximized');
+  } else {
+    // Restore previous position and size
+    windowElement.style.left = windowElement.dataset.prevLeft;
+    windowElement.style.top = windowElement.dataset.prevTop;
+    windowElement.style.width = windowElement.dataset.prevWidth;
+    windowElement.style.height = windowElement.dataset.prevHeight;
+    windowElement.classList.remove('maximized');
+  }
 }
 
 // Get Maximum z-index Value
@@ -58,9 +93,25 @@ document.querySelectorAll('.dock-icon').forEach(icon => {
   });
 });
 
-// Event Listeners for Window Close Buttons
+// Event Listeners for Window Buttons
 document.querySelectorAll('.close-btn').forEach(button => {
   button.addEventListener('click', closeWindow);
+});
+
+document.querySelectorAll('.minimize-btn').forEach(button => {
+  button.addEventListener('click', minimizeWindow);
+});
+
+document.querySelectorAll('.maximize-btn').forEach(button => {
+  button.addEventListener('click', maximizeWindow);
+});
+
+// Touch Support for Window Buttons
+document.querySelectorAll('.window-buttons span').forEach(button => {
+  button.addEventListener('touchstart', (event) => {
+    event.preventDefault();
+    event.target.click();
+  }, { passive: false });
 });
 
 // Bring Window to Front on Click or Touch
