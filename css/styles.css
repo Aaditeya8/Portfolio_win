@@ -30,6 +30,7 @@ body {
   color: white;
   position: absolute;
   cursor: pointer;
+  touch-action: manipulation; /* Improves touch interactions */
 }
 
 .icon img {
@@ -41,6 +42,17 @@ body {
   display: block;
   margin-top: 5px;
   font-size: 12px;
+}
+
+/* Icons Hover and Active Effects */
+.icon:hover img,
+.icon:active img {
+  transform: scale(1.1);
+  transition: transform 0.2s;
+}
+
+.icon:active {
+  transform: scale(0.95); /* Slightly shrink icon on tap */
 }
 
 /* Positioning Icons */
@@ -59,12 +71,6 @@ body {
   left: 50px;
 }
 
-/* Icons Hover Effect */
-.icon:hover img {
-  transform: scale(1.1);
-  transition: transform 0.2s;
-}
-
 /* Windows */
 .window {
   width: 800px;
@@ -80,6 +86,7 @@ body {
   opacity: 0;
   transform: scale(0.8);
   transition: opacity 0.3s ease, transform 0.3s ease;
+  touch-action: none; /* Disables default touch actions on window elements */
 }
 
 .window.show {
@@ -93,7 +100,8 @@ body {
   padding: 5px 10px;
   display: flex;
   align-items: center;
-  cursor: move;
+  cursor: move; /* Indicates that the element can be dragged */
+  touch-action: none; /* Disables default touch actions on header */
 }
 
 .window-buttons {
@@ -155,6 +163,7 @@ body {
   height: 48px;
   margin: 0 10px;
   cursor: pointer;
+  position: relative; /* Needed for absolute positioning of the title */
 }
 
 .dock-icon img {
@@ -162,25 +171,13 @@ body {
   height: 100%;
 }
 
-.dock-icon:hover img {
+.dock-icon:hover img,
+.dock-icon:active img {
   transform: scale(1.2);
   transition: transform 0.2s;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .window {
-    width: 90%;
-    height: 70%;
-    top: 15%;
-    left: 5%;
-  }
-}
 /* Dock Title Styles */
-.dock-icon {
-  position: relative; /* Needed for absolute positioning of the title */
-}
-
 .dock-title {
   visibility: hidden;
   opacity: 0;
@@ -250,4 +247,12 @@ body {
   text-decoration: underline;
 }
 
-
+/* Responsive Design */
+@media (max-width: 768px) {
+  .window {
+    width: 90%;
+    height: 70%;
+    top: 15%;
+    left: 5%;
+  }
+}
