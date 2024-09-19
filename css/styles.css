@@ -104,16 +104,22 @@ body {
   touch-action: none; /* Disables default touch actions on header */
 }
 
+/* Updated Window Buttons */
 .window-buttons {
   display: flex;
   gap: 8px;
+  margin-left: 10px;
 }
 
 .window-buttons span {
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
 }
 
 .close-btn {
@@ -126,6 +132,31 @@ body {
 
 .maximize-btn {
   background-color: #28c840;
+}
+
+/* Icons inside the buttons */
+.window-buttons span::before {
+  content: '';
+  position: absolute;
+  font-size: 9px;
+  color: #4a4a4a;
+}
+
+.close-btn::before {
+  content: '✕';
+}
+
+.minimize-btn::before {
+  content: '–';
+  margin-top: -1px;
+}
+
+.maximize-btn::before {
+  content: '＋';
+}
+
+.window-buttons span:hover::before {
+  color: #000;
 }
 
 .window-title {
