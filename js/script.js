@@ -8,6 +8,12 @@ function isTouchDevice() {
 // Open Window Function
 function openWindow(windowId) {
   const windowElement = document.getElementById(windowId);
+
+  // If window was minimized, remove the minimized state
+  if (windowElement.classList.contains('minimized')) {
+    windowElement.classList.remove('minimized');
+  }
+
   windowElement.style.display = 'flex'; // Reset display property to make window visible
   // Force reflow to ensure the transition occurs
   windowElement.offsetHeight; // Trigger a reflow
@@ -17,7 +23,9 @@ function openWindow(windowId) {
 
 // Close Window Function
 function closeWindow(event) {
-  const windowElement = event.target.closest('.window');
+  event.preventDefault();
+  event.stopPropagation();
+  const windowElement = event.currentTarget.closest('.window');
   windowElement.classList.remove('show');
   windowElement.classList.remove('maximized'); // Remove maximized state if any
   setTimeout(() => {
@@ -27,14 +35,22 @@ function closeWindow(event) {
 
 // Minimize Window Function
 function minimizeWindow(event) {
-  const windowElement = event.target.closest('.window');
+  event.preventDefault();
+  event.stopPropagation();
+  const windowElement = event.currentTarget.closest('.window');
   windowElement.classList.remove('show');
-  // Implement minimize functionality if desired
+  windowElement.classList.remove('maximized'); // Remove maximized state if any
+  windowElement.classList.add('minimized');
+  setTimeout(() => {
+    windowElement.style.display = 'none';
+  }, 300); // Duration matches the CSS transition
 }
 
 // Maximize/Restore Window Function
 function maximizeWindow(event) {
-  const windowElement = event.target.closest('.window');
+  event.preventDefault();
+  event.stopPropagation();
+  const windowElement = event.currentTarget.closest('.window');
   if (!windowElement.classList.contains('maximized')) {
     // Save current position and size
     windowElement.dataset.prevLeft = windowElement.style.left;
@@ -68,50 +84,25 @@ function getMaxZIndex() {
   return maxZ;
 }
 
-// Event Listeners for Desktop Icons
-document.querySelectorAll('.icon').forEach(icon => {
-  if (isTouchDevice()) {
-    // For touch devices, use single tap (click) to open windows
-    icon.addEventListener('click', () => {
-      const windowId = icon.getAttribute('data-window');
-      openWindow(windowId);
-    });
-  } else {
-    // For non-touch devices, keep double-click to open windows
-    icon.addEventListener('dblclick', () => {
-      const windowId = icon.getAttribute('data-window');
-      openWindow(windowId);
-    });
-  }
-});
+// Function to handle button clicks/touches
+function handleWindowButtonEvent(event) {
+  event.preventDefault();
+  event.stopPropagation();
+  const button = event.currentTarget;
 
-// Event Listeners for Dock Icons
-document.querySelectorAll('.dock-icon').forEach(icon => {
-  icon.addEventListener('click', () => {
-    const windowId = icon.getAttribute('data-window');
-    openWindow(windowId);
-  });
-});
+  if (button.classList.contains('close-btn')) {
+    closeWindow(event);
+  } else if (button.classList.contains('minimize-btn')) {
+    minimizeWindow(event);
+  } else if (button.classList.contains('maximize-btn')) {
+    maximizeWindow(event);
+  }
+}
 
 // Event Listeners for Window Buttons
-document.querySelectorAll('.close-btn').forEach(button => {
-  button.addEventListener('click', closeWindow);
-});
-
-document.querySelectorAll('.minimize-btn').forEach(button => {
-  button.addEventListener('click', minimizeWindow);
-});
-
-document.querySelectorAll('.maximize-btn').forEach(button => {
-  button.addEventListener('click', maximizeWindow);
-});
-
-// Touch Support for Window Buttons
 document.querySelectorAll('.window-buttons span').forEach(button => {
-  button.addEventListener('touchstart', (event) => {
-    event.preventDefault();
-    event.target.click();
-  }, { passive: false });
+  button.addEventListener('click', handleWindowButtonEvent);
+  button.addEventListener('touchstart', handleWindowButtonEvent, { passive: false });
 });
 
 // Bring Window to Front on Click or Touch
@@ -220,4 +211,43 @@ window.addEventListener('load', () => {
   setTimeout(() => {
     showNotification();
   }, 3000);
+});
+
+// Event Listeners for Desktop Icons
+document.querySelectorAll('.icon').forEach(icon => {
+  if (isTouchDevice()) {
+    // For touch devices, use single tap (click) to open windows
+    icon.addEventListener('click', () => {
+      const windowId = icon.getAttribute('data-window');
+      openWindow(windowId);
+    });
+  } else {
+    // For non-touch devices, keep double-click to open windows
+    icon.addEventListener('dblclick', () => {
+      const windowId = icon.getAttribute('data-window');
+      openWindow(windowId);
+    });
+  }
+});
+
+// Event Listeners for Dock Icons
+document.querySelectorAll('.dock-icon').forEach(icon => {
+  icon.addEventListener('click', () => {
+    const windowId = icon.getAttribute('data-window');
+    const windowElement = document.getElementById(windowId);
+
+    // If the window is minimized, restore it
+    if (windowElement.classList.contains('minimized')) {
+      windowElement.classList.add('show');
+      windowElement.classList.remove('minimized');
+      windowElement.style.display = 'flex';
+      windowElement.style.zIndex = getMaxZIndex() + 1;
+    } else if (!windowElement.classList.contains('show')) {
+      // If the window is not open, open it
+      openWindow(windowId);
+    } else {
+      // If the window is already open and not minimized, bring it to front
+      windowElement.style.zIndex = getMaxZIndex() + 1;
+    }
+  });
 });
