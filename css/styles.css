@@ -1,0 +1,253 @@
+/* Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body, html {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: 'Helvetica', sans-serif;
+}
+
+.desktop {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: url('../images/background.jpg') no-repeat center center fixed;
+  background-size: cover;
+}
+
+/* Desktop Icons */
+.icon {
+  width: 80px;
+  text-align: center;
+  color: white;
+  position: absolute;
+  cursor: pointer;
+}
+
+.icon img {
+  width: 64px;
+  height: 64px;
+}
+
+.icon span {
+  display: block;
+  margin-top: 5px;
+  font-size: 12px;
+}
+
+/* Positioning Icons */
+.icon:nth-of-type(1) {
+  top: 50px;
+  left: 50px;
+}
+
+.icon:nth-of-type(2) {
+  top: 150px;
+  left: 50px;
+}
+
+.icon:nth-of-type(3) {
+  top: 250px;
+  left: 50px;
+}
+
+/* Icons Hover Effect */
+.icon:hover img {
+  transform: scale(1.1);
+  transition: transform 0.2s;
+}
+
+/* Windows */
+.window {
+  width: 800px;
+  height: 600px;
+  background-color: white;
+  border: 1px solid #ccc;
+  position: absolute;
+  top: 50px;
+  left: 100px;
+  display: none;
+  flex-direction: column;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.window.show {
+  display: flex;
+  opacity: 1;
+  transform: scale(1);
+}
+
+.window-header {
+  background-color: #e0e0e0;
+  padding: 5px 10px;
+  display: flex;
+  align-items: center;
+  cursor: move;
+}
+
+.window-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.window-buttons span {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.close-btn {
+  background-color: #ff5f57;
+}
+
+.minimize-btn {
+  background-color: #ffbd2e;
+}
+
+.maximize-btn {
+  background-color: #28c840;
+}
+
+.window-title {
+  margin-left: 10px;
+  font-size: 14px;
+}
+
+.window-content {
+  flex: 1;
+  overflow: auto;
+}
+
+.window-content iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* Dock */
+.dock {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 64px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 20px;
+  padding: 5px 10px;
+  display: flex;
+  align-items: center;
+}
+
+.dock-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 10px;
+  cursor: pointer;
+}
+
+.dock-icon img {
+  width: 100%;
+  height: 100%;
+}
+
+.dock-icon:hover img {
+  transform: scale(1.2);
+  transition: transform 0.2s;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .window {
+    width: 90%;
+    height: 70%;
+    top: 15%;
+    left: 5%;
+  }
+}
+/* Dock Title Styles */
+.dock-icon {
+  position: relative; /* Needed for absolute positioning of the title */
+}
+
+.dock-title {
+  visibility: hidden;
+  opacity: 0;
+  width: 80px;
+  background-color: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  text-align: center;
+  border-radius: 5px;
+  padding: 5px 0;
+  position: absolute;
+  bottom: 70px; /* Position above the icon */
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  transition: opacity 0.2s;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.dock-icon:hover .dock-title {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Notification Styles */
+.notification {
+  position: fixed;
+  top: 20px;
+  right: -350px; /* Start off-screen */
+  width: 300px;
+  padding: 15px;
+  background-color: rgba(240, 240, 240, 0.95);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  transition: right 0.5s ease;
+  z-index: 1000;
+}
+
+.notification.show {
+  right: 20px; /* Slide into view */
+}
+
+.notification.hide {
+  right: -350px; /* Slide out of view */
+}
+
+.notification-icon {
+  width: 40px;
+  height: 40px;
+  margin-right: 15px;
+}
+
+.notification-content p {
+  margin: 0;
+  font-size: 16px;
+  color: #333;
+}
+
+.notification-content a {
+  color: #007aff;
+  text-decoration: none;
+}
+
+.notification-content a:hover {
+  text-decoration: underline;
+}
+
+
