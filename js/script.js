@@ -206,13 +206,6 @@ function hideNotification() {
   }, 500); // Duration matches the CSS animation
 }
 
-// Trigger the notification after a delay (e.g., 3 seconds after page load)
-window.addEventListener('load', () => {
-  setTimeout(() => {
-    showNotification();
-  }, 3000);
-});
-
 // Event Listeners for Desktop Icons
 document.querySelectorAll('.icon').forEach(icon => {
   if (isTouchDevice()) {
@@ -250,4 +243,22 @@ document.querySelectorAll('.dock-icon').forEach(icon => {
       windowElement.style.zIndex = getMaxZIndex() + 1;
     }
   });
+});
+
+// Hide Loading Screen After Page Load
+window.addEventListener('load', () => {
+  // Delay to allow the progress bar animation to complete
+  setTimeout(() => {
+    const loadingScreen = document.getElementById('loading-screen');
+    loadingScreen.classList.add('hidden');
+    // Remove the loading screen from the DOM after the fade-out
+    setTimeout(() => {
+      loadingScreen.style.display = 'none';
+    }, 500); // Duration matches the CSS transition
+  }, 3500); // Adjust this delay to match the progress bar animation duration
+
+  // Show the notification after the loading screen hides
+  setTimeout(() => {
+    showNotification();
+  }, 4000); // Adjusted to occur after the loading screen hides
 });
